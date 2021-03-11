@@ -9,12 +9,14 @@
 #define RIGHT '>'
 #define LEFT '<'
 #define SMOOTH '-'
+#define RANGE 4
+#define NOC 6
 
 int getSpeed(int);
 void printMenu(void);
 void printLastMenu(void);
 void goHome(int begin);
-void generateWay(void);
+std::string generateWay(int p);
 
 
 std::string way = "1-</-2>/!\\-3-!\\-4";
@@ -24,15 +26,23 @@ int maxSpeed = 40; /*максимальная скорость велосипе�
 int tm = 0; /*время в минутах*/
 bool away = false;
 bool go = true;
-std::string dots = "1234";
+int p = 0; /*пункт, на котором велосипедист развернулся*/
+std::string dots = "";
+
 
 int main(int argc, char const *argv[])
 {
+	std::cout << "Введите количетво контрольных пунктов(от 2 до 15): ";
+	do{
+		std::cin >> p;
+	}
+	while(p < 2 || p > 15);
+	way = generateWay(p);
 	std::cout << way << std::endl;
 
 	int d;
 	std::cout << "Велоипедист собирается на поездку!" << std::endl;
-	for(int i = 0; i < way.size(), go; i++)
+	for(int i = 0; i < way.size(), go, !away; i++)
 	{
 		std::cout << "-----------------------------------------------" << std::endl;
 		
@@ -49,6 +59,7 @@ int main(int argc, char const *argv[])
 					speed = getSpeed(speed);
 					break;
 				case 2:
+					away = true;
 					goHome(i - 1);
 					break;
 			}
@@ -61,7 +72,7 @@ int main(int argc, char const *argv[])
 			case '3':
 				std::cout << "Время в пути: " << tm << " минут" << std::endl;
 				std::cout << "Скорость: " << speed << "км/ч" << std::endl;
-				std::cout << "Проезд населенного пункта" << std::endl;
+				std::cout << "Проезд населенного пункта №"  << i + 1 << std::endl;
 				std::cout << "Как поступаем дальше?" << std::endl;
 				printMenu();
 				std::cin >> d;
@@ -155,7 +166,7 @@ void printStep(int step)
 		case '2':
 		case '3':
 		case '4':
-			std::cout << "Проезд населенного пункта" << std::endl;
+			std::cout << "Проезд населенного пункта №" << step + 1 <<  std::endl;
 			break;
 		case SMOOTH:
 			std::cout << "Ровный участок дороги" << std::endl;
@@ -195,4 +206,40 @@ void printLastMenu(void)
 {
 	std::cout << "1. Вернуться в начальный пункт." << std::endl;
 	std::cout << "2. Прогуляться" << std::endl;
+}
+
+std::string generateWay(int p)
+{
+	std::string w = "";
+	for(int i = 0; i < p - 1; i++) /* p - 1 потому что после поледнего пункта не надо заполнять пространство*/
+	{
+		w+=std::to_string(i+1);
+		for(int j = 0; j < RANGE; j++) 
+		{
+			int r = rand() % NOC + 1;
+			switch(r)
+			{
+				case 1:
+					w += PRP;
+					break;
+				case 2:
+					w += DOWN;
+					break;
+				case 3:
+					w += UP;
+					break;
+				case 4:
+					w += LEFT;
+					break;
+				case 5:
+					w += RIGHT;
+					break;
+				case 6:
+					w += SMOOTH;
+					break;
+			}
+		}
+	}
+	w+=std::to_string(p);
+	return w;
 }

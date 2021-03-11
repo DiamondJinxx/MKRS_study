@@ -14,9 +14,12 @@
 
 int getSpeed(int);
 void printMenu(void);
+void printStep(int);
 void printLastMenu(void);
 void goHome(int begin);
 std::string generateWay(int p);
+
+int getNum(int&, bool);
 
 
 std::string way = "1-</-2>/!\\-3-!\\-4";
@@ -32,11 +35,11 @@ std::string dots = "";
 
 int main(int argc, char const *argv[])
 {
-	std::cout << "Введите количетво контрольных пунктов(от 2 до 15): ";
+	std::cout << "Введите количетво контрольных пунктов(от 2 до 9): ";
 	do{
 		std::cin >> p;
 	}
-	while(p < 2 || p > 15);
+	while(p < 2 || p > 9);
 	way = generateWay(p);
 	std::cout << way << std::endl;
 
@@ -67,49 +70,49 @@ int main(int argc, char const *argv[])
 		}
 		switch(way.at(i))
 		{
-			case '1':
-			case '2':
-			case '3':
-				std::cout << "Время в пути: " << tm << " минут" << std::endl;
-				std::cout << "Скорость: " << speed << "км/ч" << std::endl;
-				std::cout << "Проезд населенного пункта №"  << i + 1 << std::endl;
-				std::cout << "Как поступаем дальше?" << std::endl;
-				printMenu();
-				std::cin >> d;
-				tm += rand() % 30 + 1;
-				switch(d)
-				{
-					case 1:
-						speed = getSpeed(speed);
-						break;
-					case 2:
-						break;
-					case 3:
-						speed = 0;
-					break;
-				}
-				break;
-			case '4':
-				std::cout << "Велосипедист добрался до конечного пункта маршрута." << std::endl;
-				printLastMenu();
-				std::cin >> d;
-				// tm += rand() % 30 + 1;
-				switch(d)
-				{
-					case 1:
-						goHome(i);
-						break;
-					case 2:
-						int tw;
-						std::cout << "Сколько времени затратить на прогулку(в минутах)?" <<std::endl;
-						std::cin >> tw;
-						tm += tw;
-						std::cout << "Велосипедист припарковывает свой велосипед и идет на прогулку. Нагулявшись, велосипедист возвращается домой." << std::endl;
-						goHome(i);
-						break;
-				}
+			// case '1':
+			// case '2':
+			// case '3':
+			// 	std::cout << "Время в пути: " << tm << " минут" << std::endl;
+			// 	std::cout << "Скорость: " << speed << "км/ч" << std::endl;
+			// 	std::cout << "Проезд населенного пункта №"  <<  << std::endl;
+			// 	std::cout << "Как поступаем дальше?" << std::endl;
+			// 	printMenu();
+			// 	std::cin >> d;
+			// 	tm += rand() % 30 + 1;
+			// 	switch(d)
+			// 	{
+			// 		case 1:
+			// 			speed = getSpeed(speed);
+			// 			break;
+			// 		case 2:
+			// 			break;
+			// 		case 3:
+			// 			speed = 0;
+			// 		break;
+			// 	}
+			// 	break;
+			// case '4':
+			// 	std::cout << "Велосипедист добрался до конечного пункта маршрута." << std::endl;
+			// 	printLastMenu();
+			// 	std::cin >> d;
+			// 	// tm += rand() % 30 + 1;
+			// 	switch(d)
+			// 	{
+			// 		case 1:
+			// 			goHome(i);
+			// 			break;
+			// 		case 2:
+			// 			int tw;
+			// 			std::cout << "Сколько времени затратить на прогулку(в минутах)?" <<std::endl;
+			// 			std::cin >> tw;
+			// 			tm += tw;
+			// 			std::cout << "Велосипедист припарковывает свой велосипед и идет на прогулку. Нагулявшись, велосипедист возвращается домой." << std::endl;
+			// 			goHome(i);
+			// 			break;
+			// 	}
 
-				break;
+			// 	break;
 			case SMOOTH:
 				std::cout << "Ровный участок дороги" << std::endl;
 				break;
@@ -128,6 +131,52 @@ int main(int argc, char const *argv[])
 			case LEFT:
 				std::cout << "Поворот влево" << std::endl;
 				break;
+		}
+		int s = way.at(i) - '0';
+		if(s > 0 && s < p)
+		{
+			std::cout << "Время в пути: " << tm << " минут" << std::endl;
+			std::cout << "Скорость: " << speed << "км/ч" << std::endl;
+			std::cout << "Проезд населенного пункта №"  <<  s << std::endl;
+			std::cout << "Как поступаем дальше?" << std::endl;
+			printMenu();
+			std::cin >> d;
+			tm += rand() % 30 + 1;
+			switch(d)
+			{
+				case 1:
+					speed = getSpeed(speed);
+					break;
+				case 2:
+					break;
+				case 3:
+					speed = 0;
+				break;
+			}
+		}
+		if( s == p) 
+		{
+			std::cout << "Велосипедист добрался до конечного пункта маршрута." << std::endl;
+			printLastMenu();
+			std::cin >> d;
+			// tm += rand() % 30 + 1;
+			switch(d)
+			{
+				case 1:
+					away = true;
+					goHome(i);
+					break;
+				case 2:
+					int tw;
+					std::cout << "Сколько времени затратить на прогулку(в минутах)?" <<std::endl;
+					std::cin >> tw;
+					tm += tw;
+					std::cout << "Велосипедист припарковывает свой велосипед и идет на прогулку. Нагулявшись, велосипедист возвращается домой." << std::endl;
+					away = true;
+					goHome(i);
+					break;
+			}
+			break;
 		}
 
 	}
@@ -162,32 +211,32 @@ void printStep(int step)
 {
 	switch(way.at(step))
 	{
-		case '1':
-		case '2':
-		case '3':
-		case '4':
-			std::cout << "Проезд населенного пункта №" << step + 1 <<  std::endl;
-			break;
 		case SMOOTH:
 			std::cout << "Ровный участок дороги" << std::endl;
 			break;
 		case UP:
-			std::cout << "Подъем" << std::endl;
+			std::cout << "Спуск" << std::endl;
 			break;
 		case DOWN:
-			std::cout << "Спуск" << std::endl;
+			std::cout << "Подъем" << std::endl;
 			break;
 		case PRP:
 			std::cout << "Препятствие" << std::endl;
 			break;
 		case RIGHT:
-			std::cout << "Поворот вправо" << std::endl;
-			break;
-		case LEFT:
 			std::cout << "Поворот влево" << std::endl;
 			break;
+		case LEFT:
+			std::cout << "Поворот вправо" << std::endl;
+			break;
 	}
+	int s = way.at(step) - '0'; /*пока используетс только для обратного пути*/
+	std::cout << s << std::endl;
+
+	if(s > 0 && s <= p )
+		std::cout << "Проезд населенного пункта №"  <<  s << std::endl;
 }
+
 void goHome(int begin)
 {
 	if(away)
@@ -243,3 +292,32 @@ std::string generateWay(int p)
 	w+=std::to_string(p);
 	return w;
 }
+
+
+// int getNum(int& index, bool dir)
+// {
+// 	int res = 0;
+// 	int r;
+// 	if(index < way.size())
+// 	{}
+// 	if(dir)/*если движемся прямо*/
+// 	{
+// 		while( (r = way.at(index) - '0')  >= 0 && r <= 9)
+// 		{
+// 			res = res * 10 + r;
+// 			index++;
+// 		}
+// 		//index--;
+// 	}
+// 	else
+// 	{
+// 		while( (r = way.at(index) - '0')  >= 0 && r <= 9)
+// 		{
+// 			res = res * 10 + r;
+// 			index--;
+// 		}
+// 		res = (res % 10) * 10 + (res / 10);		
+// 		//index++;
+// 	}
+// 	return res;
+// }
